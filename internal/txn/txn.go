@@ -7,6 +7,7 @@ const (
 )
 
 type Txn struct {
+  Id       string
 	Sender   string
 	Receiver string
 	Status   int
