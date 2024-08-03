@@ -44,10 +44,14 @@ func (b *Block) GetPreviousHash() string {
 	return string(b.Metadata.PrevHash)
 }
 
+func (b *Block) GetHash() string {
+	return string(b.Metadata.Hash)
+}
+
 func (b *Block) GetTxnInfo(txnId string) (txn.Txn, error) {
 	transaction, exists := b.Data[txnId]
 	if !exists {
-		return txn.Txn{}, errors.New(err.TXN_NONEXISTENT)
+		return transaction, errors.New(err.TXN_NONEXISTENT)
 	}
 
 	return transaction, nil
