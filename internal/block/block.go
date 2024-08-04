@@ -21,10 +21,10 @@ type Block struct {
 	Data     map[string]txn.Txn
 }
 
-func CreateBlock(prevHash []byte) Block {
+func CreateBlock(prevHash []byte) *Block {
 	blockHash := hash.CreateNewHash()
 
-	block := Block{
+	block := &Block{
 		Metadata: Metadata{
 			Timestamp: time.Now(),
 			PrevHash:  prevHash,
@@ -57,12 +57,12 @@ func (b *Block) GetTxnInfo(txnId string) (txn.Txn, error) {
 	return transaction, nil
 }
 
-func (b *Block) AddTransaction(transaction txn.Txn) error {
-	_, exists := b.Data[transaction.Id]
+func (b *Block) AddTransaction(transaction *txn.Txn) error {
+	_, exists := b.Data[transaction.Id.String()]
 	if exists {
 		return errors.New(err.TXN_EXISTS_IN_BLOCK)
 	}
 
-	b.Data[transaction.Id] = transaction
+	b.Data[transaction.Id.String()] = *transaction
 	return nil
 }

@@ -18,8 +18,8 @@ type Chain struct {
 	Length   int
 }
 
-func CreateChain(name string) Chain {
-	return Chain{
+func CreateChain(name string) *Chain {
+	return &Chain{
 		Metadata: Metadata{
 			Name: name,
 		},
@@ -49,17 +49,17 @@ func (c *Chain) GetGenesisBlock() block.Block {
 	return c.Metadata.GenesisBlock
 }
 
-func (c *Chain) AddBlock(block block.Block) error {
+func (c *Chain) AddBlock(block *block.Block) error {
 	_, exists := c.Blocks[block.GetHash()]
 	if exists {
 		return errors.New(err.BLOCK_EXISTS_IN_CHAIN)
 	}
 
 	if c.Length == 0 {
-		c.Metadata.GenesisBlock = block
+		c.Metadata.GenesisBlock = *block
 	}
 
-	c.Blocks[block.GetHash()] = block
+	c.Blocks[block.GetHash()] = *block
 	c.Length++
 
 	return nil
