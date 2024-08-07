@@ -18,7 +18,7 @@ type Metadata struct {
 
 type Block struct {
 	Metadata Metadata
-	Data     map[string]txn.Txn
+	Data     map[string]*txn.Txn
 }
 
 func CreateBlock(prevHash []byte) *Block {
@@ -30,7 +30,7 @@ func CreateBlock(prevHash []byte) *Block {
 			PrevHash:  prevHash,
 			Hash:      blockHash,
 		},
-		Data: map[string]txn.Txn{},
+		Data: map[string]*txn.Txn{},
 	}
 
 	return block
@@ -51,10 +51,10 @@ func (b *Block) GetHash() string {
 func (b *Block) GetTxnInfo(txnId string) (txn.Txn, error) {
 	transaction, exists := b.Data[txnId]
 	if !exists {
-		return transaction, errors.New(err.TXN_NONEXISTENT)
+		return *transaction, errors.New(err.TXN_NONEXISTENT)
 	}
 
-	return transaction, nil
+	return *transaction, nil
 }
 
 func (b *Block) AddTransaction(transaction *txn.Txn) error {
@@ -63,6 +63,6 @@ func (b *Block) AddTransaction(transaction *txn.Txn) error {
 		return errors.New(err.TXN_EXISTS_IN_BLOCK)
 	}
 
-	b.Data[transaction.Id.String()] = *transaction
+	b.Data[transaction.Id.String()] = transaction
 	return nil
 }
