@@ -21,13 +21,21 @@ type Block struct {
 	Data     map[string]*txn.Txn
 }
 
-func CreateBlock(prevHash []byte) *Block {
-	blockHash := hash.CreateNewHash()
+func CreateBlock(prevHash string, txns []*txn.Txn) *Block {
+  transactionTimestamps := ""
+
+  for _, transaction := range txns {
+    transactionTimestamps += transaction.CreatedAt().String()
+  }
+
+  hashData := []byte(transactionTimestamps + prevHash)
+
+	blockHash := hash.CreateNewHash(hashData)
 
 	block := &Block{
 		Metadata: Metadata{
 			Timestamp: time.Now(),
-			PrevHash:  prevHash,
+			PrevHash:  []byte(prevHash),
 			Hash:      blockHash,
 		},
 		Data: map[string]*txn.Txn{},

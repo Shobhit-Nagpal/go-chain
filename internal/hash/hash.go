@@ -1,12 +1,13 @@
 package hash
 
-import "crypto/sha256"
+import (
+	"crypto/sha256"
+)
 
-func CreateNewHash() []byte {
-  data := "This is supposed to be some previous data ka hash"
+func CreateNewHash(data []byte) []byte {
   h := sha256.New()
 
-  h.Write([]byte(data))
+  h.Write(data)
   blockHash := h.Sum(nil)
 
   return blockHash

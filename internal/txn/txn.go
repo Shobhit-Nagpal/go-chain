@@ -1,6 +1,8 @@
 package txn
 
 import (
+	"time"
+
 	"github.com/Shobhit-Nagpal/go-chain/internal/account"
 	"github.com/google/uuid"
 )
@@ -17,6 +19,7 @@ type Txn struct {
 	Receiver *account.Account
 	Status   int
 	Amount   float32
+  Timestamp time.Time
 }
 
 func CreateTransaction(sender, receiver *account.Account, amount float32) (*Txn, error) {
@@ -27,6 +30,7 @@ func CreateTransaction(sender, receiver *account.Account, amount float32) (*Txn,
 		Receiver: receiver,
 		Status:   PENDING,
     Amount: amount,
+    Timestamp: time.Now(),
 	}
 
   err := sender.Debit(amount)
@@ -40,4 +44,8 @@ func CreateTransaction(sender, receiver *account.Account, amount float32) (*Txn,
   transaction.Status = SUCCESS
 
   return transaction, nil
+}
+
+func (t *Txn) CreatedAt() time.Time {
+  return t.Timestamp
 }
