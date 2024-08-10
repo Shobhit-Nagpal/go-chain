@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"time"
 
 	"github.com/Shobhit-Nagpal/go-chain/internal/account"
@@ -14,19 +15,13 @@ import (
 var accounts map[string]*account.Account = make(map[string]*account.Account)
 
 func main() {
-	lmaoChain := chain.CreateChain("lmaoChain")
-	deez := account.CreateAccount()
-	nuts := account.CreateAccount()
-	accounts[deez.Id.String()] = deez
-	accounts[nuts.Id.String()] = nuts
 
-	transaction, err := txn.CreateTransaction(deez, nuts, 69)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	lmaoChain := chain.CreateChain("lmaoChain")
+  txnPool := initialize()
 
 	genesisHash := hash.CreateNewHash([]byte(time.Now().String()))
 
+  //Batch transactions to add in blocks
 	genesisBlock := block.CreateBlock(string(genesisHash), []*txn.Txn{transaction})
 	err = genesisBlock.AddTransaction(transaction)
 	if err != nil {
@@ -39,7 +34,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	txn2, err := txn.CreateTransaction(nuts, deez, 39)
+	txn2, err := txn.CreateTransaction(nuts, deez, 420)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -55,5 +50,44 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-  fmt.Println(lmaoChain.GetLength())
+	fmt.Println(lmaoChain.GetLength())
+}
+
+func initialize() []*txn.Txn {
+	accountIds := []string{}
+
+	deez := account.CreateAccount()
+	nuts := account.CreateAccount()
+
+	spidey := account.CreateAccount()
+	flash := account.CreateAccount()
+
+	accounts[deez.Id.String()] = deez
+	accounts[nuts.Id.String()] = nuts
+	accounts[spidey.Id.String()] = flash
+	accounts[flash.Id.String()] = flash
+
+	accountIds = append(accountIds, deez.Id.String())
+	accountIds = append(accountIds, nuts.Id.String())
+	accountIds = append(accountIds, spidey.Id.String())
+	accountIds = append(accountIds, flash.Id.String())
+
+	txnPool := []*txn.Txn{}
+	totalAccounts := len(accounts)
+
+	for i := 0; i < 1000; i++ {
+		senderIdx := rand.IntN(totalAccounts)
+		receiverIdx := rand.IntN(totalAccounts)
+		if senderIdx == receiverIdx {
+			continue
+		} else {
+			transaction, err := txn.CreateTransaction(accounts[accountIds[senderIdx]], accounts[accountIds[receiverIdx]], float32(rand.IntN(100)))
+			if err != nil {
+				fmt.Println(err)
+			}
+			txnPool = txn.EnqueueTxn(txnPool, transaction)
+		}
+	}
+
+  return txnPool
 }

@@ -7,3 +7,5 @@ const BLOCK_EXISTS_IN_CHAIN = "Block with the particular hash already exists in 
 const BLOCK_NONEXISTENT = "Block with given hash does not exist"
 
 const NOT_ENOUGH_BALANCE = "The account doesn't have enough balance"
+
+const EMPTY_QUEUE_DEQUEUE_ATTEMPT = "Attempt to dequeue element from an empty queue"
